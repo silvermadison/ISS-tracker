@@ -1,9 +1,12 @@
-# Internation Space Station Tracker
+# International Space Station Tracker
 ## Objective
-The purpose of this project is to track the International Space Station (ISS) by using the ISS's data from its website. This project uses software design principles including REST APIs (Representational State Transfer Application Programming Interfaces), Flask Application, creating routes in Flask using type annotations and docstrings, working with XML data, and containerization. 
+The purpose of this project is to track the International Space Station (ISS) by using the ISS's data from its website. This project uses software design principles including REST APIs (Representational State Transfer Application Programming Interfaces), Flask Application, creating routes in Flask using type annotations and docstrings, working with XML data, and containerization with Dockerfiles, Docker Compose, and Docker images. 
 
 ## Contents
-This repository includes 1 script, 1 Dockerfile, and 1 README file.
+This repository includes 1 script, 1 Dockerfile, 1 docker-compose, and 1 README file.
+
+## Required Modules
+This project requires the installation of the requests, Flask, xmltodict, and geopy modules. Install these modules with the ```pip install --user <module>``` command in the command line.
 
 ## ISS Data
 **ADD MORE HERE.** The International Space Station (ISS) data is a dictionary of data points with epoch, position, and velocity data with a name EPOCH and keys X, X_DOT, Y, Y_DOT, Z, Z_DOT.
@@ -30,11 +33,9 @@ In the ```iss_tracker.py``` file, it contains instructions for reading the ISS d
 In order to find the speed in the ```/epochs/<epoch>/speed``` route the following equation was used:
 speed = sqrt(x_dot^2 + y_dot^2 + z_dot^2)
 
-In order to find the location in the ```/epochs/<epoch>/location``` route the follow equation was used: **ADD MORE HERE**
-
 
 ### Part 2 - Dockerfile 
-The Dockerfile contains commands for building a new image. When creating the Dockerfile the image should contain the same versions of modules as you are using on the Jetstream VM; this will be reflected in the ```FROM``` and ```RUN``` instructions. We will do this for the modules python, flask, requests, and xmltodict.
+The Dockerfile contains commands for building a new image. When creating the Dockerfile the image should contain the same versions of modules as you are using on the Jetstream VM; this will be reflected in the ```FROM``` and ```RUN``` instructions. We will do this for the modules python, flask, requests, xmltodict, and geopy.
 
 To check your version of python run ```python3``` in the VM command line. Output should look similar to:
 ```
@@ -62,21 +63,28 @@ To check your version of xmltodict, in the VM command line run ```pip freeze | g
 xmltodict==0.13.0
 ```
 The version of xmltodict I am using is 0.13.0 and this version is also used in the ```RUN``` instruction in the Dockerfile.
+To check your version of geopy, in the VM command line run ```pip freeze | grep geopy```. Output should look similar to:
+```
+geopy==2.3.0
+```
+The version of geopy I am using is 2.3.0 and this version is also used in the ```RUN``` instruction in the Dockerfile.
 
 
 ## Instructions
+### Cloning the Repository
+In order to retrieve the data from this repository use the command ```git clone git@github.com:silvermadison/ISS-tracker.git```.
+
+
 ### Pull the Image from Docker Hub
-To get the image from Docker Hub use the command ```docker pull silvermadison/iss_tracker:hw05```.
+To get the image from Docker Hub use the command ```docker pull silvermadison/iss_tracker:1.0```. **ADD A PULL FROM THE REPO**
 
 
 ### Build a New Image from This Dockerfile
-Create the image using the command ```docker build -t silvermadison/iss_tracker:hw05 .```.
+Create the image using the command ```docker build -t silvermadison/iss_tracker:1.0 .```. Check to make sure the image is there using the command```docker images```.
 
-Check to make sure the image is there using the command```docker images```. Output should look similar to:
-**ADD HERE**
 
 ### Run the Containerized Flask App
-Test the image with the command ```docker run -it --rm silvermadison/iss_tracker:hw05 /bin/bash```.
+Test the image with the command ```docker run -it --rm silvermadison/iss_tracker:1.0 /bin/bash```.
 Once this is run you should be in the container. From here you can go into the python interpreter to ensure the flask, requests, and xmltodict modules have been installed with no errors. This exchange should look like the following:
 ```
 root@9a1f45a8ea52:/# python
@@ -86,12 +94,13 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> import flask
 >>> import requests
 >>> import xmltodict
+>>> import geopy
 >>> 
 ```
-Quit the python interpreter with ```quit()``` and then run Flask in the container ```flask --app iss_tracker --debug run```.
+Quit the python interpreter with ```quit()``` and exit the container. Now we will run Flask using the docker compose file with the command ```docker-compose up```.
 
 ### Example Outputs and API Query Commands
-Now with the container running, you can test API query commands. In order to run the code, open another tab in your linux operating system so that you have two tabs total. In one tab the container is running in the foreground and in the other tab API query commands will be made.
+Now with the container running, you can test API query commands. In order to run the code, open another tab in your linux operating system so that you have two tabs total. In one tab Flask is running in the foreground and in the other tab API query commands will be made.
 
 The ```/``` route should output the entire ISS dataset:
 ```
@@ -302,4 +311,56 @@ The ```/metadata``` route outputs the 'metadata' dictionary object from the ISS 
 }
 ```
 
+The '''/epochs/50/location''' route outputs the latitude, longitude, altitude, and geolocation of a specific epoch. The geolocation will not be known if the ISS is over the ocean, so there are two possible outputs.
+1:
+'''
+{
+  "altitude": {
+    "units": "km",
+    "value": -6364197.968864758
+  },
+  "geo": {
+    "ISO3166-2-lvl4": "AU-QLD",
+    "city_district": "Esmeralda",
+    "country": "Australia",
+    "country_code": "au",
+    "municipality": "Croydon Shire",
+    "state": "Queensland"
+  },
+  "latitude": -18.9743413534676,
+  "longitude": 142.75833256176264
+}
+'''
+Or 2:
+'''
+{
+  "altitude": {
+    "units": "km",
+    "value": -6364196.111767501
+  },
+  "geo": "geo location is unknown, perhaps it is over the ocean",
+  "latitude": -18.754409239452805,
+  "longitude": -120.42065547090488
+}
+'''
 
+The ```/now``` route outputs the closests epoch to the current date and time and returns information about its location and speed:
+```
+{
+  "closest_epoch": "2023-067T16:42:07.856Z",
+  "location": {
+    "altitude": {
+      "units": "km",
+      "value": -6364199.811651108
+    },
+    "geo": "geo location is unknown, perhaps it is over the ocean",
+    "latitude": 0.4894663802027471,
+    "longitude": -120.88028096429042
+  },
+  "seconds_from_now": 43.68109583854675,
+  "speed": {
+    "units": "km/s",
+    "value": 7.6577609186199975
+  }
+}
+```
