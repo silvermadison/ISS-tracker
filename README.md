@@ -9,7 +9,9 @@ This repository includes 1 script, 1 Dockerfile, 1 docker-compose, and 1 README 
 This project requires the installation of the requests, Flask, xmltodict, and geopy modules. Install these modules with the ```pip install --user <module>``` command in the command line.
 
 ## ISS Data
-**ADD MORE HERE.** The International Space Station (ISS) data is a dictionary of data points with epoch, position, and velocity data with a name EPOCH and keys X, X_DOT, Y, Y_DOT, Z, Z_DOT.
+The International Space Station (ISS) data is a data set of information about the ISS. It is an extremely large dictionary containing metadata, comments about the ISS like units, mass, etc., as well as time, position, and velocity data about where the ISS was, is, and will be in over a 15 day time frame with data points for every 4 minutes. Each data point is a dictionary with keys EPOCH, X, X_DOT, Y, Y_DOT, Z, Z_DOT giving it its unique epoch, position, and velocity data. Within the script file, you can see how robust the data is by viewing how many keys are needed to get to these individual data point dictionaries.
+
+Keeter, Bill. “ISS Trajectory Data.” Edited by Jacob Keaton, Spot the Station International Space Station, NASA, 27 July 2021, https://spotthestation.nasa.gov/trajectory_data.cfm.
 
 ### Part 1 - Routes
 In the ```iss_tracker.py``` file, it contains instructions for reading the ISS data and the app routes below. The requests and xmltodict modules are used to read the ISS information into a usable dictionary of the data. 
@@ -76,7 +78,7 @@ In order to retrieve the data from this repository use the command ```git clone 
 
 
 ### Pull the Image from Docker Hub
-To get the image from Docker Hub use the command ```docker pull silvermadison/iss_tracker:1.0```. **ADD A PULL FROM THE REPO**
+To get the image from Docker Hub use the command ```docker pull silvermadison/iss_tracker:1.0```.
 
 
 ### Build a New Image from This Dockerfile
@@ -311,9 +313,9 @@ The ```/metadata``` route outputs the 'metadata' dictionary object from the ISS 
 }
 ```
 
-The '''/epochs/50/location''' route outputs the latitude, longitude, altitude, and geolocation of a specific epoch. The geolocation will not be known if the ISS is over the ocean, so there are two possible outputs.
+The ```/epochs/50/location``` route outputs the latitude, longitude, altitude, and geolocation of a specific epoch. The geolocation will not be known if the ISS is over the ocean, so there are two possible outputs.
 1:
-'''
+```
 {
   "altitude": {
     "units": "km",
@@ -330,9 +332,9 @@ The '''/epochs/50/location''' route outputs the latitude, longitude, altitude, a
   "latitude": -18.9743413534676,
   "longitude": 142.75833256176264
 }
-'''
+```
 Or 2:
-'''
+```
 {
   "altitude": {
     "units": "km",
@@ -342,7 +344,7 @@ Or 2:
   "latitude": -18.754409239452805,
   "longitude": -120.42065547090488
 }
-'''
+```
 
 The ```/now``` route outputs the closests epoch to the current date and time and returns information about its location and speed:
 ```
