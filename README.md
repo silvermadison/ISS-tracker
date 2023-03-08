@@ -1,6 +1,6 @@
 # International Space Station Tracker
 ## Objective
-The purpose of this project is to track the International Space Station (ISS) by using the ISS's data from its website. This project uses software design principles including REST APIs (Representational State Transfer Application Programming Interfaces), Flask Application, creating routes in Flask using type annotations and docstrings, working with XML data, and containerization with Dockerfiles, Docker Compose, and Docker images. **ADJUST A BIT**
+The purpose of this project is to track the International Space Station (ISS) by using the ISS's XML data from its website. This project uses software design principles, APIs (Representational State Transfer Application Programming Interfaces), containerization, and automation. This includes using Flask, Dockerfiles, Docker images, Docker Compose, and creating routes with type annotations, docstrings, and query parameters.
 
 ## Contents
 This repository includes 1 script, 1 Dockerfile, 1 docker-compose, and 1 README file.
