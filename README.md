@@ -9,7 +9,7 @@ This repository includes 1 script, 1 Dockerfile, 1 docker-compose, and 1 README 
 This project requires the installation of the requests, Flask, xmltodict, and geopy modules. Install these modules with the command ```pip install --user <module>```.
 
 ## ISS Data
-The International Space Station (ISS) data is a data set of information about the ISS. It is an extremely large dictionary containing metadata, comments about the ISS like units, mass, etc., as well as time, position, and velocity data about where the ISS was, is, and will be in over a 15 day time frame with data points for every 4 minutes. Each data point is a dictionary with keys EPOCH, X, X_DOT, Y, Y_DOT, Z, Z_DOT giving it its unique epoch, position, and velocity data. Within the script file, you can see how robust the data is by viewing how many keys are needed to get to these individual data point dictionaries.
+The International Space Station (ISS) data is a data set of information about the ISS. It is an extremely large dictionary containing metadata, comments about the ISS like units, mass, etc., as well as time, position, and velocity data about where the ISS was, is, and will be over a 15 day time frame with data points for every 4 minutes. Each data point is a dictionary with keys EPOCH, X, X_DOT, Y, Y_DOT, Z, Z_DOT giving it its unique epoch, position, and velocity data. Within the script file, you can see how robust the data is by viewing how many keys are needed to get to these individual data point dictionaries.
 
 Keeter, Bill. “ISS Trajectory Data.” Edited by Jacob Keaton, Spot the Station International Space Station, NASA, 27 July 2021, https://spotthestation.nasa.gov/trajectory_data.cfm.
 
