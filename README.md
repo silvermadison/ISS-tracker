@@ -39,6 +39,7 @@ speed = sqrt(x_dot^2 + y_dot^2 + z_dot^2)
 ### Part 2 - Dockerfile 
 The Dockerfile contains commands for building a new image. When creating the Dockerfile the image should contain the same versions of modules as you are using on the Jetstream VM; this will be reflected in the ```FROM``` and ```RUN``` instructions. We will do this for the modules python, flask, requests, xmltodict, and geopy.
 
+
 To check your version of python run ```python3``` in the VM command line. Output should look similar to:
 ```
 Python 3.8.10 (default, Nov 14 2022, 12:59:47) 
@@ -48,11 +49,13 @@ Type "help", "copyright", "credits" or "license" for more information.
 ```
 The first line shows you the version of python you are using, in this case I am using Python 3.8.10. This same version is contained in the ```FROM``` instruction in the Dockerfile.
 
+
 To check your version of flask, in the VM command line run ```pip freeze | grep Flask```. Output should look similar to:
 ```
 Flask==2.2.2
 ```
 The version of Flask I am using is 2.2.2 and this version is also used in the Dockerfile.
+
 
 To check your version of requests, in the VM command line run ```pip freeze | grep requests```. Output should look similar to:
 ```
@@ -60,11 +63,14 @@ requests==2.22.0
 ```
 The version of requests I am using is 2.22.0 and this version is also used in the ```RUN``` instruction in the Dockerfile.
 
+
 To check your version of xmltodict, in the VM command line run ```pip freeze | grep xmltodict```. Output should look similar to:
 ```
 xmltodict==0.13.0
 ```
 The version of xmltodict I am using is 0.13.0 and this version is also used in the ```RUN``` instruction in the Dockerfile.
+
+
 To check your version of geopy, in the VM command line run ```pip freeze | grep geopy```. Output should look similar to:
 ```
 geopy==2.3.0
