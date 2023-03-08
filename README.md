@@ -108,7 +108,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 Quit the python interpreter with ```quit()``` and exit the container. Now we will run Flask using the docker compose file with the command ```docker-compose up```.
 
 ### Example Outputs and API Query Commands
-Now with the container running, you can test API query commands. In order to run the code, open another tab in your linux operating system so that you have two tabs total. In one tab Flask is running in the foreground and in the other tab API query commands will be made.
+With Flask running, you can test API query commands. In order to run the code, open another tab in your linux operating system so that you have two tabs total. In one tab Flask is running in the foreground and in the other tab API query commands will be made.
 
 The ```/``` route should output the entire ISS dataset:
 ```
