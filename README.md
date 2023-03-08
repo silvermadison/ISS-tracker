@@ -93,7 +93,7 @@ Create the image using the command ```docker build -t silvermadison/iss_tracker:
 
 ### Run the Containerized Flask App
 Test the image with the command ```docker run -it --rm silvermadison/iss_tracker:1.0 /bin/bash```.
-Once this is run you should be in the container. From here you can go into the python interpreter to ensure the flask, requests, and xmltodict modules have been installed with no errors. This exchange should look like the following:
+Once this is run you should be in the container. From here you can go into the python interpreter to ensure the flask, requests, xmltodict, and geopy modules have been installed with no errors. This exchange should look like the following:
 ```
 root@9a1f45a8ea52:/# python
 Python 3.8.10 (default, Jun 23 2021, 15:19:53) 
