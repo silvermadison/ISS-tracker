@@ -88,7 +88,7 @@ To get the image from Docker Hub use the command ```docker pull silvermadison/is
 
 
 ### Build a New Image from This Dockerfile
-Create the image using the command ```docker build -t silvermadison/iss_tracker:1.0 .```. Check to make sure the image is there using the command```docker images```.
+Create the image using the command ```docker build -t silvermadison/iss_tracker:1.0 .```. Check to make sure the image is there using the command ```docker images```.
 
 
 ### Run the Containerized Flask App
