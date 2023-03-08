@@ -1,7 +1,8 @@
 import requests
 import xmltodict
 import math
-from datetime import datetime
+import time
+from geopy.geocoders import Nominatim
 from flask import Flask
 from flask import request
 
@@ -78,6 +79,7 @@ def get_speed(epoch):
         Returns:
             speed (float): the instantaneous speed of the given epoch
     '''
+    speed_data = {}
     #if epoch is not in data - same format as in get_an_epoch_data function
     if epoch>=len(data):
         return "Error: Epoch value is not in the data set", 400
@@ -91,8 +93,11 @@ def get_speed(epoch):
     calc = (xdot*xdot)+(ydot*ydot)+(zdot*zdot)
     speed = math.sqrt(calc )
     units = data[epoch]['X_DOT']['@units']
-    #return str(speed)
-    return (f'speed: {str(speed)} {units}')
+    #put data into dict
+    speed_data["value"] = speed
+    speed_data["units"] = units
+    #return (f'speed: {str(speed)} {units}')
+    return speed_data
 
 @app.route('/help', methods = ['GET'])
 def help():
@@ -174,6 +179,87 @@ def metadata():
 	'''
 	metadata = info['ndm']['oem']['body']['segment']['metadata']
 	return metadata
+
+@app.route('/epochs/<int:epoch>/location', methods = ['GET'])
+def get_location(epoch):
+    '''
+        This function returns location data for a given epoch.
+
+        Args:
+            epoch (int): the specific number of the data set to look at
+
+        Returns:
+            location_data (dict): a dictonary with latitude, longitude, altitude, and geolocation data
+    '''
+    if epoch>=len(data):
+        return "Error: Epoch value is not in the data set", 400
+    x = data[epoch]['X']['#text']
+    y = data[epoch]['Y']['#text']
+    z = data[epoch]['Z']['#text']
+    x = float(x)
+    y = float(y)
+    z = float(z)
+    units = data[epoch]['Z']['@units']
+    mean_earth_radius = 6371000 #meters
+    hrs = data[epoch]['EPOCH'][9:11] 
+    mins = data[epoch]['EPOCH'][12:14] 
+    hrs = int(hrs)
+    mins = int(mins)
+    lat = math.degrees(math.atan2(z, math.sqrt(x**2 + y**2)))                
+    lon = math.degrees(math.atan2(y, x)) - ((hrs-12)+(mins/60))*(360/24) + 24
+    lon = float(lon)
+    if abs(lon) > 180.0: #change sign
+        if lon>0:
+            lon = lon-180
+            lon = 180-lon
+        else:
+            lon = lon+180
+            lon= 180+lon
+
+    alt = math.sqrt(x**2 + y**2 + z**2)-mean_earth_radius
+    geocoder = Nominatim(user_agent='iss_tracker')
+    geoloc = geocoder.reverse((lat, lon), zoom=15, language='en')
+    #create a dictionary for location data
+    location_data = {}
+    location_data["latitude"] = lat
+    location_data["longitude"] = lon
+    location_data["altitude"] = {'value':alt , 'units': units}
+    if str(geoloc) == "None":
+        location_data["geo"] = "geo location is unknown, perhaps it is over the ocean" 
+    else: #has a geolocation that is not None
+        location_data['geo'] = geoloc.raw['address'] 
+    return location_data
+
+@app.route('/now', methods = ['GET'])
+def now():
+    '''
+        This fucntion finds the closest epoch to the current time and returns information about its speed and location.
+
+        Returns:
+            now_data (dict): a dictionary with keys including what the closest epoch is, how far in seconds it is from the current time, location from the get_location function, and speed from the get_speed function
+    '''
+    time_now = time.time()  # gives present time in seconds since unix epoch
+    epochs = epoch_args()
+    time_epoch = time.mktime(time.strptime(epochs[0][:-5], '%Y-%jT%H:%M:%S'))
+    minimum = time_now - time_epoch
+    count = 0
+    for epoch in epochs:
+        time_epoch = time.mktime(time.strptime(epoch[:-5], '%Y-%jT%H:%M:%S'))#epoch in seconds 
+        difference = time_now - time_epoch #this includes date too
+        if abs(difference) < abs(minimum):
+            minimum = difference
+            near_epoch = epoch
+            epoch_num = count
+        count = count+1
+    now_location = get_location(epoch_num)
+    now_speed = get_speed(epoch_num)
+    #create a dictionary of now data
+    now_data = {}
+    now_data['closest_epoch'] = near_epoch
+    now_data['seconds_from_now'] = minimum
+    now_data['location'] = now_location
+    now_data['speed'] = now_speed 
+    return now_data 
 
 
 #-----------------------------end of routes--------------------------------
