@@ -206,7 +206,7 @@ def get_location(epoch):
     hrs = int(hrs)
     mins = int(mins)
     lat = math.degrees(math.atan2(z, math.sqrt(x**2 + y**2)))                
-    lon = math.degrees(math.atan2(y, x)) - ((hrs-12)+(mins/60))*(360/24) + 24
+    lon = math.degrees(math.atan2(y, x)) - ((hrs-12)+(mins/60))*(360/24) + 32
     lon = float(lon)
     if abs(lon) > 180.0: #change sign
         if lon>0:
